@@ -1,0 +1,57 @@
+1. What is JavaScript?
+JavaScript (JS) is a high-level, interpreted programming language primarily used to make web pages interactive.
+* HTML is for structure
+* CSS is for styling
+* JavaScript is for behavior (e.g., clicks, animations, API calls)
+JavaScript is one of the core technologies of the web, alongside HTML and CSS.
+
+2. Why Learn JavaScript?
+* It runs on every browser (Chrome, Firefox, Edge, etc.)
+* No setup required — just a browser
+* Used for:
+  Web development (front-end and back-end)
+  Mobile apps (React Native)
+  Desktop apps (Electron)
+  Game development
+  IoT (Internet of Things)
+
+3. Where Does JavaScript Run?
+-> Browser (Client-side)
+   * JS runs inside the browser using engines like:
+   * Chrome → V8
+   * Firefox → SpiderMonkey
+   * Safari → JavaScriptCore
+
+-> Outside the Browser (Server-side)
+   * Using Node.js, JavaScript can run on the server
+   * Great for building APIs, real-time apps (like chats), etc.
+
+4. Key Features of JavaScript
+   Feature	                     Description
+* Dynamic Typing      -> No need to declare data types
+* Interpreted	        -> Runs line-by-line
+* Prototype-based OOP	-> Object-oriented with prototype chains
+* Single-threaded	    -> Executes one task at a time (uses Event Loop to manage async)
+* Case-sensitive	    -> Name and name are different
+* Lightweight & Fast	-> Optimized for web use
+
+5. Fundamental Concepts (You’ll Learn Later in Series)
+* Variables: var, let, const
+* Data Types: string, number, boolean, object, etc.
+* Operators: +, -, ==, ===, etc.
+* Functions
+* Arrays & Objects
+* Loops: for, while, forEach
+* Conditional Statements: if, else, switch
+* DOM Manipulation
+* Events & Listeners
+* Promises & Async-Await
+* Closures, Hoisting, TDZ
+* ES6+ Features
+
+6. JavaScript vs Other Languages
+Feature	  JavaScript	            Python	                 Java
+Typing	  Dynamic	                Dynamic	                Static
+Platform	Web/browser	           Server-side	         Server/mobile
+Syntax	  Easy	                     Easy	                Verbose
+Use	      Frontend & Backend	Backend & Scripting	    Enterprise apps
