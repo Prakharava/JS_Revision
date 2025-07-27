@@ -1,0 +1,197 @@
+SECTION 1: What is a Variable?
+A variable is a named container that stores data in memory, which you can retrieve or modify later.
+                               let name = "Prakhar";
+Here:
+* let is the keyword
+* name is the identifier
+* "Prakhar" is the value (of type string)
+
+SECTION 2: Declaring Variables
+🔹 var (ES5 — function scoped)
+            var x = 10;
+* Can be redeclared
+* Can be updated
+* Function-scoped
+* Hoisted (moved to the top but initialized with undefined)
+* Can cause bugs due to hoisting & scope issues
+
+🔹 let (ES6 — block scoped)
+        let y = 20;
+* Block-scoped
+* Cannot be redeclared in same scope
+* Can be updated
+* Not hoisted like var (in TDZ until initialized)
+
+🔹 const (ES6 — block scoped)
+      const z = 30;
+* Block-scoped
+* Cannot be updated
+* Must be initialized at declaration
+* Doesn't make object immutable (only the reference is constant)
+
+NOTE: Use const by default. Use let only when reassignment is required.
+
+SECTION 3: Scope
+1. Block Scope
+        {
+          let a = 5;
+          const b = 10;
+        }
+        console.log(a); // ❌ ReferenceError
+
+2. Function Scope
+        function test() {
+          var x = 10;
+        }
+        console.log(x); // ❌ ReferenceError
+
+NOTE: Explain difference between block and function scope with examples.
+|    Feature     |          Block Scope (`let`, `const`)           |                   Function Scope (`var`)         
+| -------------- | ----------------------------------------------- | ------------------------------------------------------------------
+| Scope Boundary | Block `{}`                                      | Entire function                
+| Introduced In  | ES6                                             | ES5 and before                 
+| Common Issue   | Safer, no accidental leakage                    | Can cause bugs due to hoisting 
+| Example        | if (true) {                                     | function test() {
+|                |  let x = 10;                                    |     if (true) {
+|                |  console.log(x);  //  ✅ 10                     |         var y = 20;
+|                |}                                                |     }
+|                |console.log(x); // ❌ Error: x is not defined    |     console.log(y); // ✅ 20 (accessible anywhere in the function)
+|                |                                                 | }
+|                |                                                 | test();
+|                |                                                 | console.log(y); // ❌ Error: y is not defined
+
+
+SECTION 4: Hoisting
+* Variables declared with var are hoisted and initialized with undefined
+* let and const are hoisted but not initialized — exist in Temporal Dead Zone (TDZ)
+                        console.log(a); // undefined
+                        var a = 5;
+
+                        console.log(b); // ReferenceError
+                        let b = 10;
+
+SECTION 5: Data Types in JavaScript
+JavaScript is a dynamically typed language, meaning variables can hold any type without type declaration.
+
+🔹 Primitive Data Types (7 total)
+
+| Type                | Example                          | Description                        |
+| ------------------- | -------------------------------- | ---------------------------------- |
+| **Number**          | `42`, `3.14`, `-0.1`             | All numbers (integers and floats)  |
+| **String**          | `'Hello'`, `"Hi"`, \`Backticks\` | Text                               |
+| **Boolean**         | `true`, `false`                  | Logical values                     |
+| **Undefined**       | `let x;`                         | Variable declared but not assigned |
+| **Null**            | `let x = null;`                  | Explicit absence of value          |
+| **Symbol (ES6)**    | `Symbol('id')`                   | Unique, immutable identifiers      |
+| **BigInt (ES2020)** | `12345678901234567890n`          | For arbitrarily large integers     |
+
+
+NOTE: typeof null is "object" — this is a bug in JS for backward compatibility
+
+🔹 Non-Primitive (Reference) Types
+
+| Type                       | Example            | Description                      |
+| -------------------------- | ------------------ | -------------------------------- |
+| **Object**                 | `{ key: "value" }` | Key-value pair data              |
+| **Array**                  | `[1, 2, 3]`        | Ordered list (object internally) |
+| **Function**               | `function() {}`    | Callable objects                 |
+| **Date, RegExp, Map, Set** | `new Date()` etc.  | Built-in objects                 |
+
+Interviewer may ask: "Is Array a data type?" — Answer: It's an object type, more specifically a specialized object.
+
+SECTION 6: typeof Operator
+The typeof operator returns the type of a value.
+typeof 10        // "number"
+typeof "hello"   // "string"
+typeof true      // "boolean"
+typeof undefined // "undefined"
+typeof null      // "object" ❗
+typeof {}        // "object"
+typeof []        // "object"
+typeof function(){} // "function"
+
+SECTION 7: Type Conversion (Casting)
+
+1. Implicit Coercion
+        '5' + 1        // '51' (string)
+        '5' - 1        // 4 (number)
+        true + 1       // 2
+        false + '1'    // 'false1'
+
+2. Explicit Conversion
+        String(123);   // "123"
+        Number("42");  // 42
+        Boolean("")    // false
+        Boolean("hi")  // true
+Interview Tip: Know truthy/falsy values
+
+SECTION 8: Truthy and Falsy Values
+# Falsy values (7 total):
+                false
+                0
+                -0
+                0n
+                ""  // empty string
+                null
+                undefined
+                NaN
+NOTE: Everything else is truthy
+
+📚 SECTION 9: Constants vs Immutable
+
+        const arr = [1, 2];
+        arr.push(3); // ✅ Works
+        arr = [4, 5]; // ❌ Error
+
+* const prevents reassignment
+* Doesn’t prevent mutation
+* Use Object.freeze() for immutability
+
+SECTION 10: Best Practices
+
+✅ Always use const unless reassignment is needed
+✅ Use let for values that change (e.g., counters, loop vars)
+❌ Avoid var unless you know why you need function-scoping
+✅ Prefer meaningful variable names
+✅ Never use undeclared variables (strict mode will throw error)
+
+            "use strict";
+            x = 10; // ❌ ReferenceError: x is not defined
+
+SECTION 11: Interview Edge Cases
+| Concept       | Trick/Quirk                     |
+| ------------- | ------------------------------- |
+| `typeof null` | Returns `"object"` (legacy bug) |
+| `NaN === NaN` | false (use `Number.isNaN()`)    |
+| `let x = x;`  | ReferenceError (TDZ)            |
+| `var x = x;`  | undefined (hoisted)             |
+| `const x;`    | SyntaxError (must initialize)   |
+
+
+SECTION 12: Cheatsheet
+
+// Declaration
+let name = "Prakhar";
+const age = 21;
+var job = "Developer";
+
+// Data Types
+let a = 5;              // number
+let b = "hello";        // string
+let c = true;           // boolean
+let d;                  // undefined
+let e = null;           // null
+let f = Symbol("id");   // symbol
+let g = 123456789n;     // bigint
+
+// Reference
+let obj = { name: "JS" };
+let arr = [1, 2, 3];
+let fn = function() {};
+
+// Type check
+typeof a;  // "number"
+typeof obj; // "object"
+typeof arr; // "object"
+typeof fn;  // "function"
+
