@@ -1,0 +1,140 @@
+1. What are Operators?
+An operator is a symbol that tells JavaScript to perform a specific action on one or more values (called operands).
+Example:
+          let sum = 10 + 5;  // "+" is the operator, 10 and 5 are operands
+
+2. Types of Operators in JavaScript:
+
+|       Category         |             Example Operators                  |                      
+| ---------------------- | ---------------------------------------------- |
+|     Arithmetic         | +, -, *, /, %, **, ++, --                      |           
+|     Assignment         | =, +=, -=, *=, /=, %=, **=                     |         
+|     Comparison         | ==, ===, !=, !==, <, >, <=, >=                 |          
+|      Logical           | &&, `                                          |             
+|     Bitwise            | &, `                                           |
+|     Ternary            | condition ? expr1 : expr2                      |            
+|     Type/Other         | typeof, instanceof, in, delete, void           |
+
+
+3. Arithmetic Operators:
+
+| Operator | Meaning        | Example        |
+| -------- | -------------- | -------------- |
+|   +      | Addition       |   5 + 2 = 7    |
+|   -      | Subtraction    |   5 - 2 = 3    |
+|   *      | Multiplication |   5 * 2 = 10   |
+|   /      | Division       |   5 / 2 = 2.5  |
+|   %      | Modulus        |   5 % 2 = 1    |
+|   **     | Exponentiation |   2 ** 3 = 8   |
+|   ++     | Increment      |   x++ or ++x   |
+|   --     | Decrement      |   x-- or --x   |
+
+NOTE: x++ vs ++x
+* x++ returns value before increment
+* ++x returns value after increment
+
+4. Assignment Operators:
+
+| Operator | Meaning           | Example                |
+| -------- | ----------------- | ---------------------- |
+|   =      | Assign            |   x = 5                |
+|   +=     | Add & assign      |   x += 3 → x = x + 3   |
+|   -=     | Subtract & assign |   x -= 2               |
+|   *=     | Multiply & assign |   x *= 4               |
+|   /=     | Divide & assign   |   x /= 2               |
+|   %=     | Modulo & assign   |   x %= 2               |
+|   **=    | Power & assign    |   x **= 3              |
+
+5. Comparison Operators:
+
+| Operator             | Meaning                        | Example                       |
+| -------------------- | ------------------------------ | ----------------------------- |
+|   ==                 | Loose equality (type coercion) |   '5' == 5 → true             |
+|   ===                | Strict equality (no coercion)  |   '5' === 5 → false           |
+|   !=                 | Loose inequality               |   '5' != 5 → `false           |
+|   !==                | Strict inequality              |   '5' !== 5 → `true           |
+|   <, >, <=, >=       | Numerical/string comparison    |    3 < 5, 'apple' > 'banana'  |
+
+NOTE: Use === and !== in real-world code — they prevent bugs caused by type coercion.
+
+6. Logical Operators:
+
+| Operator | Meaning | Example                 |
+| -------- | ------- | ----------------------- |
+|   &&     | AND     |   true && false → false | 
+|   `      |         |  `                      | 
+|   !      | NOT     |   !true → false         | 
+
+
+🔥 Short-circuiting:
+      false && anything()  // Skips the function
+      true || anything()   // Skips the function
+
+7. Ternary Operator: 
+
+Shorthand if...else expression.
+      let age = 18;
+      let status = age >= 18 ? "Adult" : "Minor";
+Structure:
+      condition ? expression_if_true : expression_if_false;
+
+8. Other Special Operators:
+
+|   Operator   |                       Use                           |
+| ------------ | --------------------------------------------------- |
+|   typeof     |   Returns type of operand → typeof 42 → "number"    |
+|   instanceof |   Checks prototype chain → arr instanceof Array     |
+|   in         |   Checks if property exists → "name" in obj         |
+|   delete     |   Removes property → delete obj.prop                |
+|   void       |   Evaluates an expression but returns undefined     |
+
+9. Bitwise Operators:
+
+| Operator | Meaning               |    
+| -------- | --------------------- | 
+|   &      | AND                   |    
+|   `      | `                     | 
+|   ^      | XOR                   |    
+|   ~      | NOT                   |    
+|   <<     | Left shift            |    
+|   >>     | Right shift           |   
+
+10. Conditional Statements:
+
+-> if, else if, else
+
+    let score = 85;
+    
+    if (score >= 90) {
+      console.log("A");
+    } else if (score >= 80) {
+      console.log("B");
+    } else {
+      console.log("C");
+    }
+ 
+-> switch Statement
+
+    let fruit = "apple";
+    
+    switch (fruit) {
+      case "apple":
+        console.log("Red fruit");
+        break;
+      case "banana":
+        console.log("Yellow fruit");
+        break;
+      default:
+        console.log("Unknown fruit");
+    }
+
+* break prevents fall-through
+* default is optional
+
+11. Truthy & Falsy in Conditions:
+
+* Falsy values in JS:
+    false, 0, "", null, undefined, NaN
+* Everything else is truthy.
+    if (" ") console.log("Runs!"); // YES ✅ (non-empty string is truthy)
+    if ([]) console.log("Runs!");  // YES ✅ (array is truthy)
