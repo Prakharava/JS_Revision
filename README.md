@@ -6,6 +6,7 @@ Welcome to your go-to guide for JavaScript Revison. This repository is a complet
 1. Foundation
 -  Intro to JavaScript
 -  Variables and DataTypes in JS
+-  Operators & Conditionals
 
  //Still Updating//
 
