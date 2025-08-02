@@ -7,6 +7,8 @@ Welcome to your go-to guide for JavaScript Revison. This repository is a complet
 -  Intro to JavaScript
 -  Variables and DataTypes in JS
 -  Operators & Conditionals
+-  Loops & Strings
+-  Functions & Scope
 
  //Still Updating//
 
