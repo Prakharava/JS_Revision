@@ -1,0 +1,163 @@
+(A): Loops in JavaScript:-
+Loops are used to repeat blocks of code a certain number of times or until a condition is met.
+-> for Loop:
+        for (let i = 0; i < 5; i++) {
+          console.log(i);
+        }
+
+Syntax:
+        for (initialization; condition; update) {
+          // code to run
+        }
+
+* Initialization → runs once
+* Condition → checked before every iteration
+* Update → runs after every iteration
+* Used when the number of iterations is known
+
+2. while Loop:
+        let i = 0;
+        while (i < 5) {
+          console.log(i);
+          i++;
+        }
+
+* Runs as long as the condition is true
+* Condition checked before each loop
+* Use when you don't know how many times to loop in advance
+
+3. do...while Loop:
+        let i = 0;
+        do {
+          console.log(i);
+          i++;
+        } while (i < 5);
+
+* Runs the code at least once, then checks the condition
+* Guaranteed one execution, even if condition is false initially
+
+4. for...in Loop:
+        const obj = { a: 1, b: 2 };
+        for (let key in obj) {
+          console.log(key, obj[key]);
+        }
+
+* Iterates over enumerable properties of an object (keys)
+* Works with objects, not arrays (though arrays are objects)
+NOTE: Don’t use for...in for arrays — index order is not guaranteed
+
+5. for...of Loop (ES6+):
+        const arr = [10, 20, 30];
+        for (let value of arr) {
+          console.log(value);
+        }
+
+* Iterates over iterables (like arrays, strings, sets, maps)
+* Safer & more readable than classic for for arrays
+
+6. break and continue:
+* break exits the loop completely
+* continue skips the current iteration and moves to the next
+        for (let i = 0; i < 5; i++) {
+          if (i === 2) continue;  // skips 2
+          if (i === 4) break;     // stops loop
+          console.log(i);
+        }
+
+✅ 7. Looping with Array Methods (ES5+)
+|    Method    |                Description                              |
+| ------------ | ------------------------------------------------------- |
+|   .forEach() | Executes a function for each element                    |
+|    .map()    | Returns a new array by transforming each element        |
+|   .filter()  | Returns a new array with elements that pass a condition |
+|   .reduce()  | Returns a single value by accumulating results          |
+
+        const arr = [1, 2, 3];
+        
+        // forEach
+        arr.forEach((val) => console.log(val));
+        
+        // map
+        const doubled = arr.map(n => n * 2); // [2, 4, 6]
+        
+        // filter
+        const evens = arr.filter(n => n % 2 === 0); // [2]
+        
+        // reduce
+        const sum = arr.reduce((acc, curr) => acc + curr, 0); // 6
+
+(B): Strings in JavaScript:-
+
+1. What is a String?
+A string is a sequence of characters enclosed in:
+Single quotes ' '
+Double quotes " "
+Template literals ` ` (ES6+)
+        let str1 = "Hello";
+        let str2 = 'World';
+        let str3 = `Hi, ${str1}`;  // template literal
+
+2. String Indexing
+        let str = "JavaScript";
+        console.log(str[0]); // "J"
+
+* Strings are zero-indexed
+* Immutable (can't change individual chars)
+
+        str[0] = "X";  // ❌ won't work
+
+3. String Properties:
+| Property | Description           |
+| -------- | --------------------- |
+| length   | Returns string length |
+
+| Method                  | Description                      | Example                               |
+| ----------------------- | -------------------------------- | ------------------------------------- |
+|   charAt(i)             | Character at index i             |     "abc".charAt(1) → "b"             |
+|   charCodeAt(i)         | Unicode at index                 |     "A".charCodeAt(0) → 65            |
+|   slice(start, end)     | Extract substring                |     "JavaScript".slice(0, 4) → "Java" |
+|   substring(start, end) | Similar to slice, no negatives   |                                       |
+|   substr(start, length) | Deprecated, avoid                |                                       |
+|   toUpperCase()         | Converts to upper                |   "abc".toUpperCase()                 |
+|   toLowerCase()         | Converts to lower                |   "ABC".toLowerCase()                 |
+|   trim()                | Removes spaces                   |   "  hi  ".trim()                     |
+|   includes()            | Checks substring                 |     "abc".includes("b") → true        |
+|   startsWith()          | Starts with?                     |   "abc".startsWith("a")               |
+|   endsWith()            | Ends with?                       |   "abc".endsWith("c")                 |
+|   repeat(n)             | Repeats n times                  |     "ha".repeat(3) → "hahaha"         |
+|   replace()             | Replace first match              |   "Hi".replace("H", "B")              |
+|   replaceAll()          | Replace all matches              |   "aa".replaceAll("a", "b")           |
+|   split()               | Convert string to array          |   "a,b,c".split(",")                  |
+|   concat()              | Join strings                     |   "a".concat("b")                     |
+
+
+5. Template Literals (Backticks ` `):
+        let name = "Prakhar";
+        let msg = `Hello, ${name}!`;
+
+* Support multi-line strings
+* Support expression interpolation
+* Great for dynamic HTML generation
+
+6. Type Conversion:
+        String(123);        // "123"
+        123 + ""            // "123" (coercion)
+        parseInt("42px");   // 42
+        Number("42");       // 42
+
+7. Comparing Strings:
+        "apple" < "banana"  // true (based on Unicode)
+        "A" < "a"           // true (uppercase < lowercase)
+
+Comparison is lexicographical (dictionary order) based on UTF-16 code points.
+
+# Interview Edge Cases:
+
+|       Concept           |        Example         |           Notes               |
+| ----------------------- | ---------------------- | ----------------------------- |
+|   for...in on array     | Loops index as strings | Don’t use for arrays          |
+|   forEach with async    |   Doesn’t await        | Use for...of with await       |
+| Immutable strings       |   str[0] = "X"         | Won’t change string           |
+|   slice(-1)             | Returns last char      | Negative index works          |
+|   == with string/number |   "5" == 5 → true      | Type coercion                 |
+|   split("")             |    Splits to chars     | "hi".split("") → ["h", "i"]   |
