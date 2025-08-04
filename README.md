@@ -9,6 +9,7 @@ Welcome to your go-to guide for JavaScript Revison. This repository is a complet
 -  Operators & Conditionals
 -  Loops & Strings
 -  Functions & Scope
+-  Variable & Function Hoisting + Function Calls
 
  //Still Updating//
 
