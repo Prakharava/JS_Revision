@@ -1,0 +1,163 @@
+1. What is the Temporal Dead Zone (TDZ)?
+The Temporal Dead Zone (TDZ) is the time between:
+* When a variable is hoisted into the scope, and
+* When it is actually declared (initialized) in the code.
+During the TDZ, accessing that variable results in a ReferenceError.
+
+2. Why does the TDZ exist?
+JavaScript introduced block-scoping with let and const in ES6.
+To protect developers from bugs that occur due to accessing variables before they're defined, TDZ was introduced.
+
+Unlike var, which is hoisted and initialized as undefined,
+let and const are hoisted but not initialized.
+
+This creates the "dead zone" — the variable exists, but cannot be used yet.
+
+Real Example:
+      console.log(a); // ❌ ReferenceError
+      let a = 10;
+
+Why?
+* The variable a is hoisted.
+* But it's in TDZ from the start of the block until let a = 10 is encountered.
+* Accessing it before its declaration triggers ReferenceError.
+
+3. Detailed Breakdown of Phases
+JavaScript Execution Context – 2 Phases:
+->  Memory Creation Phase (Hoisting):
+    * All variables are hoisted to top of scope.
+      > var → initialized to undefined
+      > let and const → declared but not initialized
+      >Function declarations → hoisted fully
+
+->  Code Execution Phase:
+    * Code runs line by line.
+    * Once the declaration (let a = 10) is reached, a is initialized.
+    * Only after initialization, you can safely use a.
+
+4. TDZ Scope Example (Block-scoped):
+      {
+        // TDZ starts
+        console.log(x); // ❌ ReferenceError
+        let x = 5;      // TDZ ends
+        console.log(x); // ✅ 5
+      }
+
+* From the start of the block to the declaration line → TDZ
+* Accessing x inside the TDZ → ❌ ReferenceError
+
+5. What about var?
+      {
+        console.log(y); // ✅ undefined
+        var y = 5;
+      }
+
+* var is function-scoped, not block-scoped.
+* It’s hoisted and initialized with undefined, so no TDZ here.
+
+6. TDZ with const
+Same behavior as let, but stricter:
+      console.log(a); // ❌ ReferenceError
+      const a = 42;
+
+* const must be declared and initialized at the same time.
+* It also lives in TDZ until the declaration line.
+
+7. Visualizing TDZ
+Code:
+    {
+      // TDZ Start
+      console.log(score); // ❌
+      let score = 100;    // TDZ ends
+      console.log(score); // ✅ 100
+    }
+
+Memory Phase (before execution):
+    let score; // Not initialized → TDZ active
+
+Execution:
+* Line 2: Access before declaration → ❌ ReferenceError
+* Line 3: score initialized to 100 → TDZ ends
+* Line 4: Now safe to access → ✅ logs 100
+
+8. Function TDZ Example
+      function greet() {
+        console.log(message); // ❌ ReferenceError
+        let message = "Hello";
+      }
+      greet();
+
+* TDZ applies inside function scope too
+* message is hoisted, but not initialized → TDZ
+
+** Common Interview Trap
+Q: What’s the output?
+      let x = 10;
+      {
+        console.log(x); // ❌ ReferenceError
+        let x = 20;
+      }
+
+✅ Answer:
+* Even though outer x exists, the inner x shadows it and has its own TDZ.
+* So console.log(x) refers to the inner x, not yet declared → ❌ ReferenceError
+
+** TDZ + typeof (Trick Question)
+      console.log(typeof a); // ❌ ReferenceError!
+      let a = 10;
+
+In older JS with var, typeof was “safe”:
+      console.log(typeof b); // ✅ 'undefined'
+      var b;
+
+But with let/const, typeof is not safe inside TDZ → ❌ ReferenceError
+
+# Summary:
+| Variable Type | Hoisted?  | Initialized?   | TDZ Exists?   | Scope Type        |
+| ------------- | --------- | -------------- | ------------- | ----------------- |
+| `var`         | ✅ Yes    | ✅ undefined  | ❌ No        | Function          |
+| `let`         | ✅ Yes    | ❌ No         | ✅ Yes       | Block             |
+| `const`       | ✅ Yes    | ❌ No         | ✅ Yes       | Block (must init) |
+
+
+# Best Practices to Avoid TDZ Errors
+1. Always declare your variables at the top of the block
+2. Avoid accessing variables before declaration
+3. Prefer let and const over var
+4. Use const by default; let if reassignment is needed
+5. Do not rely on typeof to check let/const variables before declaration
+
+<> Bonus: TDZ in For Loops
+      for (let i = 0; i < 3; i++) {
+        setTimeout(() => console.log(i), 100);
+      }
+Each i has its own block scope and TDZ in every iteration!
+
+This avoids closure problems like with var:
+      for (var i = 0; i < 3; i++) {
+        setTimeout(() => console.log(i), 100); // prints 3 three times
+      }
+
+-> TDZ Quiz
+Q1:{
+      console.log(a); // ?
+      var a = 2;
+  }
+Output: undefined (no TDZ for var)
+
+Q2: {
+  console.log(a); // ?
+  let a = 2;
+}
+Output: ReferenceError (TDZ)
+
+Q3: let x = 10;
+function test() {
+  console.log(x); // ?
+  let x = 20;
+}
+test();
+Output: ReferenceError — inner x in TDZ, shadows outer x
+
+🔚 Final Thoughts
+The TDZ is a critical part of modern JavaScript to help avoid bugs caused by accessing variables too early. While it may feel restrictive, it encourages cleaner, safer coding practices — especially in larger codebases and module-based development.
