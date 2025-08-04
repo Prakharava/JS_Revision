@@ -1,0 +1,147 @@
+1. What is Hoisting?
+  Hoisting is JavaScript’s default behavior of moving declarations (not initializations) to the top of their scope during the compile (memory creation) phase.
+  This means:
+  * Variables declared with var, and
+  * Function declarations
+  …are “hoisted” to the top of their enclosing scope (global/function), before any code is executed.
+
+2. JavaScript Execution Context (Memory + Code Phase)
+  To understand hoisting, you must understand the Execution Context:
+  -> Memory Creation Phase (aka Creation or "Hoisting" Phase)
+     * JS allocates memory for variables and functions
+     * Variables with var are assigned undefined
+     * Functions are fully hoisted (code and reference)
+  -> Code Execution Phase
+     * JS executes code line by line
+     * Values are assigned, functions invoked
+
+3. Variable Hoisting in Detail
+✅ A. var Hoisting
+      console.log(a); // undefined
+      var a = 10;
+Explanation:
+    Memory Phase:
+      var a = undefined;
+Execution Phase:
+      a = 10;
+So console.log(a) logs undefined — because the variable is hoisted, but not the assignment.
+
+❌ B. let and const Hoisting (But with Temporal Dead Zone)
+      console.log(b); // ❌ ReferenceError
+      let b = 10;
+
+let and const are also hoisted, but not initialized.
+They are placed in the Temporal Dead Zone (TDZ) from the start of the block until the declaration line.
+Trying to access them before declaration = ❌ ReferenceError
+
+** TDZ (Temporal Dead Zone)
+ -> A time between hoisting and variable declaration where let/const exist but cannot be accessed
+ -> Prevents use-before-declaration bugs
+      {
+        // TDZ starts here
+        console.log(foo); // ❌ ReferenceError
+        let foo = "bar";  // TDZ ends
+      }
+
+4. Function Hoisting in Detail
+✅ A. Function Declaration Hoisting
+        sayHi(); // ✅ works
+        
+        function sayHi() {
+          console.log("Hi");
+        }
+  Explanation:
+  Memory Phase:
+        sayHi = function sayHi() { console.log("Hi"); }
+  * Entire function is hoisted, not just the name
+
+❌ B. Function Expression (and Arrow Functions)
+        greet(); // ❌ TypeError
+        
+        var greet = function () {
+          console.log("Hello");
+        };
+    Explanation:
+    Memory Phase:
+        greet = undefined;
+    * At execution, greet() becomes undefined() = ❌ TypeError: greet is not a function
+
+    Same for arrow functions:
+        greet(); // ❌ TypeError
+        var greet = () => console.log("Hi");
+    * Function expressions are treated as variables, so only their name is hoisted with undefined, not the function body.
+
+5. Function Calls – Behind the Scenes
+Every time a function is called:
+a) A new Execution Context is created
+b) It goes through:
+   * Memory creation
+   * Code execution
+c) It is pushed onto the Call Stack
+d) Once execution completes, it is popped off
+      function one() {
+        console.log("One");
+        two();
+      }
+      
+      function two() {
+        console.log("Two");
+      }
+      
+      one();
+      
+      // Call stack: global → one() → two() → pop → pop → done
+
+6. Example: Combined Hoisting of Variables + Functions
+      test(); // ✅ Hoisted
+      
+      console.log(a); // undefined
+      // console.log(b); // ❌ ReferenceError (TDZ)
+      
+      function test() {
+        console.log("Inside function");
+      }
+      
+      var a = 10;
+      let b = 20;
+
+7. Hoisting Inside Functions
+      function example() {
+        console.log(x); // undefined
+        var x = 5;
+      }
+      example();
+
+Hoisting applies within function scope too, not just global
+
+8. Interview Traps
+Q-> What will this log?
+      var foo = 1;
+      function bar() {
+        if (!foo) {
+          var foo = 10;
+        }
+        console.log(foo);
+      }
+      bar();
+
+Output: 10
+Why?
+* Inside bar, var foo is hoisted: var foo = undefined
+* if (!foo) → if (!undefined) → true
+* foo = 10 happens
+* So console.log(foo) prints 10
+
+9. Deep Dive: Hoisting Order
+Order of hoisting priority in memory phase:
+a) Function declarations
+b) Variable declarations (var)
+c) let/const → Temporal Dead Zone
+
+10. Best Practices to Avoid Hoisting Bugs
+| Do                                                     | Don’t                                       |
+| ------------------------------------------------------ | ------------------------------------------- |
+| Use `let` and `const`                                  | Use `var`                                   |
+| Declare all variables at top of block                  | Use variables before declaration            |
+| Use function expressions/arrow if hoisting is unwanted | Depend on function hoisting in complex code |
+| Always initialize immediately                          | Trust `undefined` defaults                  |
