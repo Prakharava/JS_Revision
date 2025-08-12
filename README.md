@@ -8,10 +8,15 @@ Welcome to your go-to guide for JavaScript Revison. This repository is a complet
 -  Variables and DataTypes in JS
 -  Operators & Conditionals
 -  Loops & Strings
+
+2. Functions & Scope
 -  Functions & Scope
 -  Variable & Function Hoisting + Function Calls
 -  Temporal Dead Zone (TDZ)
 -  Closures
+
+3. Objects, Arrays & Reference Types
+-  _ _ _
 
  //Still Updating//
 
