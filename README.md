@@ -11,6 +11,7 @@ Welcome to your go-to guide for JavaScript Revison. This repository is a complet
 -  Functions & Scope
 -  Variable & Function Hoisting + Function Calls
 -  Temporal Dead Zone (TDZ)
+-  Closures
 
  //Still Updating//
 
