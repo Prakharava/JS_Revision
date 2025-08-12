@@ -1,0 +1,204 @@
+1. What is a Closure?
+A closure is a function that "remembers" the variables from its lexical scope, even after the outer function has finished executing.
+->Definition:
+A closure is the combination of a function bundled together (enclosed) with references to its surrounding lexical environment.
+
+2. When do Closures Form?
+Closures are created every time a function is created, at function creation time, not function execution time.
+
+3. Lexical Scope & Environment
+To understand closures, you must first understand lexical scope:
+Lexical scope means a function scope is determined by its location in the source code, and nested functions have access to variables declared in their outer scope.
+Example:
+        function outer() {
+          let outerVar = 'I am from outer';
+          
+          function inner() {
+            console.log(outerVar); // ✅ Can access outerVar
+          }
+        
+          return inner;
+        }
+        const fn = outer();
+        fn(); // logs: 'I am from outer'
+
+Here, inner() forms a closure over outerVar.
+
+4. How Closures Work Internally
+Under the Hood:
+* When outer() runs:
+  > It defines outerVar
+  > It defines inner()
+  > It returns inner
+* Even though outer() has finished executing, inner() still remembers the value of outerVar through a closure.
+
+This is possible because JS doesn’t delete the outer scope from memory if it's still referenced by a closure.
+
+5. Real-Life Closure Analogy
+Think of a closure like a backpack:
+Whenever a function is defined inside another function, it carries a backpack of all variables it had access to at the time it was created.
+Even if you take that function out of the parent and call it somewhere else, it still carries the backpack with it.
+
+6. Common Examples of Closures
+A. Function Factory:
+        function greet(name) {
+          return function(message) {
+            console.log(`${message}, ${name}`);
+          }
+        }
+        
+        const greetJohn = greet('John');
+        greetJohn('Good morning'); // "Good morning, John"
+
+greetJohn is a closure that remembers name = 'John'.
+
+B. Counter with Closure:
+        function createCounter() {
+          let count = 0;
+          return function() {
+            count++;
+            return count;
+          }
+        }
+        
+        const counter = createCounter();
+        console.log(counter()); // 1
+        console.log(counter()); // 2
+
+* count is private.
+* Each call retains access to count via closure.
+
+7. Closures in Loops
+Classic Interview Trap 
+    for (var i = 0; i < 3; i++) {
+      setTimeout(() => console.log(i), 1000);
+    }
+Output? ❌ Not 0, 1, 2. It logs:
+3
+3
+3
+
+Why?
+* var is function-scoped.
+* All callbacks share the same i, which becomes 3 when the loop ends.
+
+Fix using closure:
+      for (var i = 0; i < 3; i++) {
+        (function(j) {
+          setTimeout(() => console.log(j), 1000);
+        })(i);
+      }
+
+Now it logs:
+0
+1
+2
+
+Each IIFE (Immediately Invoked Function Expression) captures its own copy of i.
+Fix using let (ES6 block scoping):
+      for (let i = 0; i < 3; i++) {
+        setTimeout(() => console.log(i), 1000);
+      }
+
+8. Memory Implications
+Closures retain memory for their outer scope variables. So be cautious — long-lived closures can:
+> Cause memory leaks if you forget to break references
+> Hold onto large objects or DOM nodes unnecessarily
+
+Example:
+        function attachEvent() {
+          let largeData = new Array(1000000).fill('🚀');
+          document.getElementById('btn').addEventListener('click', function() {
+            console.log('Button clicked');
+          });
+        }
+Unless largeData is used in the closure, it will be garbage collected. But if the closure references it, it stays in memory.
+
+9. Closures with setTimeout
+Another Interview Favorite:
+      function delayMessage(msg, delay) {
+        setTimeout(function() {
+          console.log(msg); // closure over msg
+        }, delay);
+      }
+      
+      delayMessage("Hello after 2 seconds", 2000);
+
+10. Closures in React (Functional Components)
+Closures come into play with hooks (e.g., stale state problems):
+      function Timer() {
+        const [count, setCount] = useState(0);
+      
+        useEffect(() => {
+          setInterval(() => {
+            setCount(count + 1); // 🚫 Closure captures stale count
+          }, 1000);
+        }, []);
+      }
+Fix using functional update:
+      setCount(prev => prev + 1); // ✅ always gets the latest state
+
+11. Common Interview Q&A
+Q1. Can you create a private variable in JS?
+        Yes! Use closures:
+        function secret() {
+          let password = 'jsRocks';
+          return {
+            getPassword: () => password
+          }
+        }
+        
+        const vault = secret();
+        console.log(vault.getPassword()); // jsRocks
+
+Q2. Does a closure keep variables alive?
+Yes, as long as the inner function is referenced, outer variables are not garbage collected.
+
+<> Table:
+
+| Concept          | `var`     | `let` / `const` |
+| ---------------- | --------- | --------------- |
+| Hoisted          | Yes       | Yes (TDZ)       |
+| Scoped to        | Function  | Block           |
+| Used in Closures | ✅ Yes    | ✅ Yes         |
+| Can leak memory  | Sometimes | Sometimes       |
+
+
+<> NOTE:
+Functions always close over the environment in which they were defined, not where they're executed
+
+Using closures inside loops (especially with var) can cause bugs
+
+Don't confuse closure with execution context — closure is what’s remembered, not where it runs
+
+-> Closure Quiz
+-> Q1
+    function outer() {
+      let a = 1;
+      return function inner() {
+        console.log(a);
+      }
+    }
+    const x = outer();
+    x(); // ?
+Answer: 1
+
+Q2
+    function makeAdder(x) {
+      return function(y) {
+        return x + y;
+      }
+    }
+    const add5 = makeAdder(5);
+    console.log(add5(3)); // ?
+Answer: 8
+
+Q3
+    let funcs = [];
+    for (var i = 0; i < 3; i++) {
+      funcs.push(() => console.log(i));
+    }
+    funcs[0](); funcs[1](); funcs[2](); // ?
+
+❌ Logs 3 3 3 (shared i)
+
