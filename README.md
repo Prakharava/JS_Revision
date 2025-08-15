@@ -16,7 +16,9 @@ Welcome to your go-to guide for JavaScript Revison. This repository is a complet
 -  Closures
 
 3. Objects, Arrays & Reference Types
--  _ _ _
+-  Reference Types: Objects & Arrays
+-  Object Cloning & Garbage Collector
+-  ****
 
  //Still Updating//
 
