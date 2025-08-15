@@ -1,0 +1,192 @@
+1. JavaScript Data Types
+
+  JS has two types of values:
+    -> Primitive Types (Stored by Value)
+    | Type        | Examples          |
+    | ----------- | ----------------- |
+    | `string`    | `'hello'`, `"hi"` |
+    | `number`    | `42`, `3.14`      |
+    | `boolean`   | `true`, `false`   |
+    | `null`      | `null`            |
+    | `undefined` | `undefined`       |
+    | `symbol`    | `Symbol("id")`    |
+    | `bigint`    | `1234567890123n`  |
+  
+  > Stored in stack memory
+  > Copied by value
+  
+    -> Reference Types (Stored by Reference)
+    | Type       | Examples           |
+    | ---------- | ------------------ |
+    | `object`   | `{ key: "value" }` |
+    | `array`    | `[1, 2, 3]`        |
+    | `function` | `function() {}`    |
+  
+  > Stored in heap memory
+  > Copied by reference (i.e., pointer)
+
+2. Objects in JavaScript
+  Q. What is an Object?
+  An object is a non-primitive, key-value data structure where keys are strings (or Symbols), and values can be any type (including functions, other objects, etc).
+        const person = {
+          name: "Prakhar",
+          age: 22,
+          isDev: true,
+          speak: function() {
+            console.log("Hello!");
+          }
+        };
+  
+  Accessing properties
+        person.name         // dot notation
+        person["age"]       // bracket notation
+  
+  Internal Storage & Memory
+  When you write:
+        const obj = { a: 10 };
+  
+  a) JS allocates memory in the heap for { a: 10 }
+  b) obj holds a reference (address) in the stack pointing to that heap location
+  
+        Stack:      obj ───▶ address (e.g., #001)
+        Heap:     #001 ───▶ { a: 10 }
+  
+  Object Copying (Reference Trap)
+        const a = { value: 10 };
+        const b = a;
+        b.value = 20;
+        console.log(a.value); // 20 
+  
+  Because b and a point to the same memory address, changing one affects the other.
+
+3. Arrays in JavaScript
+  Q. What is an Array?
+  Arrays are ordered lists of elements stored under numeric indexes (starting from 0), and are actually objects under the hood.
+        const fruits = ['apple', 'banana', 'cherry'];
+        console.log(fruits[1]); // banana
+  
+  Arrays in JS are:
+  * Dynamic (can grow/shrink)
+  * Heterogeneous (mixed types allowed)
+        const arr = [1, 'hello', true, null, { x: 1 }];
+  
+  Internally:
+        const arr = [10, 20, 30];
+  
+  Memory layout:
+        Stack:      arr ───▶ address #100
+        Heap:     #100 ───▶ [10, 20, 30]
+  
+  Array Reference Trap
+        const a = [1, 2];
+        const b = a;
+        b.push(3);
+        console.log(a); // [1, 2, 3]
+        
+  Again — both a and b point to the same array in heap memory.
+
+4. How to Clone Objects and Arrays (Shallow Copy)
+  > For Objects:
+        const obj = { name: "JS" };
+        const clone1 = Object.assign({}, obj);
+        const clone2 = { ...obj }; // Spread operator
+  
+  > For Arrays:
+        const arr = [1, 2, 3];
+        const clone1 = arr.slice();
+        const clone2 = [...arr]; // Spread
+        const clone3 = Array.from(arr);
+
+5. Deep vs Shallow Copy
+  > Shallow Copy:
+        const original = {
+          name: "Prakhar",
+          address: { city: "Delhi" }
+        };
+        const copy = { ...original };
+        copy.address.city = "Mumbai";
+        console.log(original.address.city); // Mumbai 😬
+        
+  * Only first level is copied
+  * address is still a shared reference
+  
+  > Deep Copy (manual or recursive):
+  Using structuredClone() (modern):
+        const deepClone = structuredClone(original);
+  
+  Using JSON.parse(JSON.stringify(obj))
+  Limitation: Doesn’t support Date, undefined, functions, Symbol
+
+6. Comparing Objects/Arrays
+  Reference comparison (not value):
+        const a = [1, 2];
+        const b = [1, 2];
+  
+        console.log(a === b); // false ❌
+  Because they point to different memory addresses.
+  
+  Only works if it's the same reference:
+        const a = [1, 2];
+        const b = a;
+  
+        console.log(a === b); // true ✅
+
+7. Object Methods & Tricks
+      Object.keys(obj)     // returns keys as array
+      Object.values(obj)   // returns values
+      Object.entries(obj)  // [ [key, value], ... ]
+      Object.hasOwn(obj, "name")
+
+  > Object.freeze(obj)
+  Makes object immutable (shallow only)
+  
+  > Object.seal(obj)
+  Prevents adding/removing properties (but can modify existing ones)
+
+8. Arrays – Common Methods
+  | Method       | Description                       |
+  | ------------ | --------------------------------- |
+  | `push()`     | Add item to end                   |
+  | `pop()`      | Remove item from end              |
+  | `shift()`    | Remove item from start            |
+  | `unshift()`  | Add item to start                 |
+  | `slice()`    | Non-mutating sub-array            |
+  | `splice()`   | Mutating: add/remove items        |
+  | `map()`      | Returns new array after transform |
+  | `filter()`   | Returns new array after condition |
+  | `reduce()`   | Reduces array to a single value   |
+  | `includes()` | Checks if item exists             |
+  | `indexOf()`  | Finds index of item               |
+
+9. Interview Gotchas & Traps
+  1. typeof null
+      typeof null; // "object" ❌ (legacy bug in JS)
+  
+  2. Mutating arrays inside functions
+      function update(arr) {
+        arr.push(100);
+      }
+  
+      const nums = [1, 2];
+      update(nums);
+      console.log(nums); // [1, 2, 100] ✅ mutated!
+  
+  3. Shared reference in default params
+      function fn(x = []) {
+        x.push(1);
+        return x;
+      }
+      
+      fn(); // [1]
+      fn(); // [1] — new array
+  
+  But if default is = someObject, and reused, mutation can persist!
+  
+  10. Memory Management & Garbage Collection
+  Objects and arrays are garbage collected when there are no references to them.
+      
+      let a = { x: 1 };
+      let b = a;
+      
+      a = null;
+      // Still reachable via b → won't be GC'd
