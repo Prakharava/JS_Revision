@@ -1,0 +1,189 @@
+# PART 1: Object Cloning in JavaScript
+      Q. What is Object Cloning?
+      Cloning an object means creating a new object that has the same structure and values as the original.
+      
+      There are two types of cloning:
+      > Shallow Cloning → Only top-level properties are copied
+      > Deep Cloning → Nested objects are also cloned recursively
+      
+      1. Why Cloning is Tricky in JavaScript
+      JS objects are stored by reference (i.e., memory address). So:
+            const obj1 = { name: 'Prakhar' };
+            const obj2 = obj1;
+            
+            obj2.name = 'Rahul';
+            
+            console.log(obj1.name); // 🔴 'Rahul'
+      
+      Both obj1 and obj2 point to the same object in memory.
+      
+      2. Shallow Cloning — Methods & Pitfalls
+      a) Method 1: Object.assign({}, source)
+            const source = { name: 'JS' };
+            const clone = Object.assign({}, source);
+      
+      b) Method 2: Spread Operator { ...obj }
+            const source = { name: 'JS' };
+            const clone = { ...source };
+      
+      
+      These both:
+      * Clone top-level keys
+      * But don't clone nested objects
+      
+      Example: Shallow Copy Pitfall
+            const user = {
+              name: 'Prakhar',
+              address: {
+                city: 'Delhi'
+              }
+            };
+            
+            const copy = { ...user };
+            copy.address.city = 'Mumbai';
+            
+            console.log(user.address.city); // ❗ 'Mumbai' 
+      
+      Even though we cloned user, the address object is still shared.
+      
+      3. Deep Cloning — Techniques
+      1> Method 1: structuredClone() (modern JS)
+            const deepClone = structuredClone(originalObject);
+      
+      -> Works with:
+      * Nested objects
+      * Dates
+      * Arrays
+      * Sets, Maps
+      * Circular references
+      
+      2> Method 2: JSON.parse(JSON.stringify(obj))
+            const deepCopy = JSON.parse(JSON.stringify(obj));
+      
+      Limitations:
+      ❌ Drops functions
+      ❌ Converts Date to string
+      ❌ Removes undefined, Infinity, NaN
+      ❌ Crashes on circular references
+      
+      3> Method 3: Manual Recursive Cloning
+            function deepClone(obj) {
+              if (obj === null || typeof obj !== 'object') return obj;
+            
+              const result = Array.isArray(obj) ? [] : {};
+            
+              for (let key in obj) {
+                result[key] = deepClone(obj[key]);
+              }
+            
+              return result;
+            }
+      
+      * Good for understanding how recursion works
+      * Can be customized to handle Date, RegExp, etc.
+      
+      4. Handling Circular References
+      Q. What are Circular References?
+            const obj = {};
+            obj.self = obj; // 👈 refers to itself
+      
+      This will crash JSON.stringify():
+            JSON.stringify(obj); // ❌ TypeError: Converting circular structure to JSON
+      
+      But works with structuredClone()
+      
+      5. Object.freeze() vs Object.seal()
+      Object.freeze(obj)
+      * Makes object immutable
+      * Cannot add / delete / change props
+      
+            const obj = Object.freeze({ a: 1 });
+            obj.a = 2;         // ignored in non-strict, error in strict
+            obj.b = 3;         // ignored
+            delete obj.a;      // ignored
+      
+      Object.seal(obj)
+      * Cannot add or delete props
+      * But can modify existing props
+      
+            const obj = Object.seal({ a: 1 });
+            obj.a = 2;         // ✅ works
+            obj.b = 3;         // ❌ no new props
+      
+      6. Summary Cloning Methods
+      | Method                         | Shallow/Deep | Supports circular?    | Notes                        |
+      | ------------------------------ | ------------ | --------------------- | ---------------------------- |
+      | `{ ...obj }`                   | Shallow      | ❌                   | Fast, simple                 |
+      | `Object.assign()`              | Shallow      | ❌                   | Same as above                |
+      | `JSON.parse(JSON.stringify())` | Deep         | ❌                   | Drops functions, `undefined` |
+      | `structuredClone()`            | Deep         | ✅                   | Modern, ideal                |
+      | Custom Recursive Clone         | Deep         | ✅ (if WeakMap used) | Best for fine control        |
+
+PART 2: JavaScript Garbage Collector (GC)
+      Q. What is Garbage Collection?
+      JS uses automatic garbage collection to free memory occupied by values no longer in use.
+      You don’t need to free() or delete memory like in C/C++ — JS does it for you, via the Garbage Collector.
+      
+      1. How JS Memory Works
+      > Stack vs Heap
+      | Memory Type | Used For                         |
+      | ----------- | -------------------------------- |
+      | **Stack**   | Primitive values, function calls |
+      | **Heap**    | Objects, arrays, closures, etc   |
+      
+            let a = 5; // in stack
+            let obj = { x: 1 }; // obj in stack holds pointer to heap
+      
+      2. How GC Decides What to Collect?
+      Most modern JS engines use:
+      * Mark-and-Sweep Algorithm
+      
+      Mark & Sweep Steps:
+      * Mark all roots (global, local variables)
+      * Traverse references, mark reachable objects
+      * Collect all unmarked objects
+      
+            function outer() {
+              let a = { value: 42 }; // reachable
+              let b = { value: 99 }; // becomes unreachable
+              b = null;              // ❌ now b is not referenced
+            }
+      At the end, b is garbage collected.
+      
+      3. Common GC-Related Mistakes
+      ** 1. Global Variables Never Die
+            var x = {}; // remains in memory until page unload
+      
+      ** 2. Memory Leaks in Closures
+            function leaky() {
+              let bigData = new Array(1e6).fill('leak');
+              return () => console.log(bigData[0]);
+            }
+            const hold = leaky(); // bigData still lives!
+      
+      GC cannot clean bigData because it’s closed over by the inner function.
+      
+      4. Circular References are OK (if not reachable)
+      Contrary to belief, circular references don’t cause memory leaks unless still accessible:
+            function cycle() {
+              let obj1 = {};
+              let obj2 = {};
+              obj1.ref = obj2;
+              obj2.ref = obj1;
+            }
+            
+            cycle(); // ✅ Both collected, as they're not globally referenced
+      
+      5. WeakMap & WeakSet (GC Friendly)
+      These collections hold weak references, meaning they don’t prevent GC.
+            let obj = { name: "Prakhar" };
+            const weakMap = new WeakMap();
+            
+            weakMap.set(obj, "value");
+            
+            obj = null; // ✅ can be garbage collected
+      
+      Used in:
+      * Caching
+      * Memoization
+      * Avoiding leaks
